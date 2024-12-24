@@ -1,29 +1,25 @@
-# Указываем язык платформы
-version: 1.0.{build}
+image: Ubuntu2204  # образ для сборки
 
-# Указываем образ Windows для сборки
-image: Visual Studio 2022
+stack: node 20  # окружение
 
-# Указываем версию Node.js
-environment:
-  nodejs_version: "16"
+branches:
+  only:
+    - master  # ветка git
+    - main
 
-# Скачиваем Node.js и устанавливаем указанную версию
-init:
-  - ps: Install-Product node $env:nodejs_version
+cache: node_modules  # кеширование
 
-# Указываем, какие шаги выполнять
 install:
-  # Установка зависимостей проекта
-  - npm install
+  - npm install  # команда установки зависимостей
 
-build: off  # Отключаем шаг сборки, если проект не нуждается в сборке
+build: off  # отключаем встроенную в appveyor систему сборки
 
-# Артефакты для сохранения после успешной сборки
-artifacts:
-  - path: server-log.txt
-    name: Build logs
+test_script:
+  - npm run lint
 
-# Настройка публикации (опционально)
-deploy:
-  provider: Environment
+deploy_script:  # скрипт развёртывания
+  - git config --global credential.helper store
+  - git config --global user.name AppVeyor
+  - git config --global user.email ci@appveyor.com
+  - echo "https://$GITHUB_TOKEN:x-oauth-basic@github.com" > "$HOME/.git-credentials"
+  - npx push-dir --dir=dist --branch=gh-pages --force --verbose
