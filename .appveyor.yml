@@ -1,0 +1,29 @@
+# Указываем язык платформы
+version: 1.0.{build}
+
+# Указываем образ Windows для сборки
+image: Visual Studio 2022
+
+# Указываем версию Node.js
+environment:
+  nodejs_version: "16"
+
+# Скачиваем Node.js и устанавливаем указанную версию
+init:
+  - ps: Install-Product node $env:nodejs_version
+
+# Указываем, какие шаги выполнять
+install:
+  # Установка зависимостей проекта
+  - npm install
+
+build: off  # Отключаем шаг сборки, если проект не нуждается в сборке
+
+# Артефакты для сохранения после успешной сборки
+artifacts:
+  - path: server-log.txt
+    name: Build logs
+
+# Настройка публикации (опционально)
+deploy:
+  provider: Environment
