@@ -10,49 +10,49 @@ let tickets = [
         id: uuid.v4(),
         title: "Fix Login Bug",
         description: "Users cannot log in with special characters in their password.",
-        status: "open",
+        status: false,
         createdAt: new Date().toISOString(),
     },
     {
         id: uuid.v4(),
         title: "Add Dark Mode",
         description: "Implement dark mode across the entire application UI.",
-        status: "in progress",
+        status: false,
         createdAt: new Date().toISOString(),
     },
     {
         id: uuid.v4(),
         title: "Improve Performance",
         description: "Optimize database queries to reduce load times.",
-        status: "resolved",
+        status: false,
         createdAt: new Date().toISOString(),
     },
     {
         id: uuid.v4(),
         title: "Update Documentation",
         description: "Update API documentation to include new endpoints.",
-        status: "open",
+        status: false,
         createdAt: new Date().toISOString(),
     },
     {
         id: uuid.v4(),
         title: "Redesign Homepage",
         description: "Create a new, modern design for the homepage.",
-        status: "open",
+        status: false,
         createdAt: new Date().toISOString(),
     },
     {
         id: uuid.v4(),
         title: "Add Multi-Language Support",
         description: "Support multiple languages for international users.",
-        status: "in progress",
+        status: false,
         createdAt: new Date().toISOString(),
     },
     {
         id: uuid.v4(),
         title: "Fix Notification Bugs",
         description: "Notifications are not being delivered to some users.",
-        status: "open",
+        status: false,
         createdAt: new Date().toISOString(),
     },
 ];
@@ -105,14 +105,14 @@ app.use(async (ctx, next) => {
             } else if (method === 'ticketById') {
                 // Возвращаем расширенные данные тикета по ID
                 const {id} = ctx.query;
-                if (!id) {
+                if (id === undefined) {
                     ctx.response.status = 400;
                     ctx.response.body = {error: 'Ticket ID is required.'};
                     break;
                 }
 
                 const ticket = tickets.find(ticket => ticket.id === id);
-                if (!ticket) {
+                if (ticket === undefined) {
                     ctx.response.status = 404;
                     ctx.response.body = {error: 'Ticket not found.'};
                     break;
@@ -132,7 +132,7 @@ app.use(async (ctx, next) => {
                 // Создание нового тикета
                 const {name, description, status} = ctx.request.body;
 
-                if (!name || !description || !status) {
+                if (name === undefined || description === undefined || status === undefined) {
                     ctx.response.status = 400;
                     ctx.response.body = {error: 'Name, description, and status are required.'};
                     break;
@@ -161,7 +161,7 @@ app.use(async (ctx, next) => {
                 // Редактирование тикета по ID
                 const {id, name, description, status} = ctx.request.body;
 
-                if (!id || !name || !description || !status) {
+                if (id === undefined || name === undefined || description === undefined || status === undefined) {
                     ctx.response.status = 400;
                     ctx.response.body = {error: 'ID, name, description, and status are required.'};
                     break;
@@ -169,7 +169,7 @@ app.use(async (ctx, next) => {
 
                 const ticket = tickets.find(ticket => ticket.id === id);
 
-                if (!ticket) {
+                if (ticket === undefined) {
                     ctx.response.status = 404;
                     ctx.response.body = {error: 'Ticket not found.'};
                     break;
@@ -185,7 +185,7 @@ app.use(async (ctx, next) => {
                 // Изменение только статуса тикета по ID
                 const {id, status} = ctx.request.body;
 
-                if (!id || !status) {
+                if (id === undefined || status === undefined) {
                     ctx.response.status = 400;
                     ctx.response.body = {error: 'ID and status are required.'};
                     break;
@@ -193,7 +193,7 @@ app.use(async (ctx, next) => {
 
                 const ticket = tickets.find(ticket => ticket.id === id);
 
-                if (!ticket) {
+                if (ticket === undefined) {
                     ctx.response.status = 404;
                     ctx.response.body = {error: 'Ticket not found.'};
                     break;
@@ -215,7 +215,7 @@ app.use(async (ctx, next) => {
                 // Удаление тикета по ID
                 const {id} = ctx.query;
 
-                if (!id) {
+                if (id === undefined) {
                     ctx.response.status = 400;
                     ctx.response.body = {error: 'Ticket ID is required.'};
                     break;
